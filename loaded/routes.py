@@ -1,4 +1,5 @@
 from utils.visualize import visualize
+from flask_login import login_required
 from utils.functions import predict, analyze_market, simulate_market
 from flask import Blueprint, request, render_template, jsonify, flash
 
@@ -6,8 +7,9 @@ from flask import Blueprint, request, render_template, jsonify, flash
 def loaded_blueprint(data,model, enc):
 
     loaded_bp = Blueprint('loaded', __name__)
-
+    @login_required
     @loaded_bp.route('/markets', methods=['GET'])
+    @
     def get_markets():
         if data is None:
             return jsonify({'error': 'Data loading failed'})
@@ -17,6 +19,7 @@ def loaded_blueprint(data,model, enc):
 
     # API route to fetch list of categories
     @loaded_bp.route('/categories', methods=['GET'])
+    @login_required
     def get_categories():
         if data is None:
             return jsonify({'error': 'Data loading failed'})
@@ -26,6 +29,7 @@ def loaded_blueprint(data,model, enc):
         
        # Get User Data Currency
     @loaded_bp.route('/currency', methods=['GET'])
+    @login_required
     def get_currency():
         if data is not None:
             print('Currency:', '')
@@ -35,7 +39,7 @@ def loaded_blueprint(data,model, enc):
 
 
     @loaded_bp.route('/prediction', methods=['GET','POST'])
-    # @login_required
+    @login_required
     def prediction():
         if request.method == "POST":
         # Get the input data from the request
@@ -56,7 +60,7 @@ def loaded_blueprint(data,model, enc):
 
     # Visualization route
     @loaded_bp.route('/visualization', methods=['GET'])
-    # @login_required
+    @login_required
     def visualization():
         if data is None:
             flash('Error: Failed to load and process user data.', 'error')  # 
@@ -67,7 +71,7 @@ def loaded_blueprint(data,model, enc):
 
     # Market analysis route
     @loaded_bp.route('/analysis', methods=['GET', 'POST'])
-    # @login_required
+    @login_required
     def analysis():
         if request.method == "POST":
             if data is not None:
@@ -78,13 +82,13 @@ def loaded_blueprint(data,model, enc):
 
     # Simulation view route
     @loaded_bp.route('/simulation/view', methods=['GET'])
-    # @login_required
+    @login_required
     def show_simulation():
         return render_template('simulation.html')
 
     # Simulation route
     @loaded_bp.route('/simulation', methods=['GET'])
-    # @login_required
+    @login_required
     def simulation():
         num_markets = request.args.get('num_markets', type=int)
         num_commodities = request.args.get('num_commodities', type=int)
